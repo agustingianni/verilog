@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <link href='https://fonts.googleapis.com/css?family=Chivo:900' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-dark.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <title>Verilogin&#39; by agustingianni</title>
+  </head>
+
+  <body>
+    <div id="container">
+      <div class="inner">
+
+        <header>
+          <h1>Verilogin&#39;</h1>
+          <h2>This site is mainly used as a log of my learning process of verilog.</h2>
+        </header>
+
+        <section id="downloads" class="clearfix">
+          <a href="https://github.com/agustingianni/verilog/zipball/master" id="download-zip" class="button"><span>Download .zip</span></a>
+          <a href="https://github.com/agustingianni/verilog/tarball/master" id="download-tar-gz" class="button"><span>Download .tar.gz</span></a>
+          <a href="https://github.com/agustingianni/verilog" id="view-on-github" class="button"><span>View on GitHub</span></a>
+        </section>
+
+        <hr>
+
+        <section id="main_content">
+          <h1>
+<a id="verilogin" class="anchor" href="#verilogin" aria-hidden="true"><span class="octicon octicon-link"></span></a>Verilogin'</h1>
+
+<p>Compendium of all my notes taken while learning Verilog.</p>
+
+<h2>
+<a id="basics" class="anchor" href="#basics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Basics</h2>
+
+<hr>
+
+<h3>
+<a id="sized-numbers" class="anchor" href="#sized-numbers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Sized numbers</h3>
+
+<p>The size of the numbers are specified.</p>
+
+<pre><code>&lt;bit_size&gt; '&lt;base&gt; &lt;number&gt;
+8'b11111111
+8'o377
+8'd255
+8'hff
+</code></pre>
+
+<h3>
+<a id="unsized-numbers" class="anchor" href="#unsized-numbers" aria-hidden="true"><span class="octicon octicon-link"></span></a> Unsized numbers</h3>
+
+<p>By default these are 32 bit at least, depends on the implementation.</p>
+
+<pre><code>123
+'o123
+'h123
+</code></pre>
+
+<h3>
+<a id="special-numbers" class="anchor" href="#special-numbers" aria-hidden="true"><span class="octicon octicon-link"></span></a> Special "numbers"</h3>
+
+<p>Verilog has two weird "numbers" that are very useful to represent unknown things, they are <code>x</code> and <code>z</code>.
+The character <code>x</code> in a number represents an unknown value. They are useful in a number of situations but where I think they excel is at comparisons like inside the <code>case</code> statements.</p>
+
+<pre><code>8'b1111xxxx 
+</code></pre>
+
+<p>There is also the <code>_</code> number. This is used to indicate that certain parts of a number are not used.</p>
+
+<pre><code>8'b1111__xx
+</code></pre>
+
+<h3>
+<a id="registers--wires" class="anchor" href="#registers--wires" aria-hidden="true"><span class="octicon octicon-link"></span></a>Registers &amp; wires</h3>
+
+<p>Wires are like inmutable registers, they have a value but they don't "hold" it.
+Registers maintain status and are, as far as I know, the equivalent of flip-flips.</p>
+
+<pre><code>reg some_reg;
+</code></pre>
+
+<p>Since we did not assign a value for the single bit register <code>some_reg</code> the value it holds is <code>1'bx</code>.</p>
+
+<h3>
+<a id="vectors" class="anchor" href="#vectors" aria-hidden="true"><span class="octicon octicon-link"></span></a>Vectors</h3>
+
+<p>Both wires and registers can be made to be vectors by specifying a vector size. It should be noted that vectors are not array and specifying the size range creates a register or a wire of a certain bit length <code>n</code>.</p>
+
+<pre><code>reg [7:0] some_reg;
+</code></pre>
+
+<p>Now <code>some_reg</code> will be a register vector of size 8.</p>
+
+<h3>
+<a id="integers" class="anchor" href="#integers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Integers</h3>
+
+<p>The type of registers is <code>unsigned</code> so they are not that convenient for some operations that are inherently signed. In order to overcome this fact we can use an <code>integer</code> that is a signed 32 bit integer (in most of the cases).</p>
+
+<pre><code>integer some_integer;
+</code></pre>
+
+<h3>
+<a id="arrays" class="anchor" href="#arrays" aria-hidden="true"><span class="octicon octicon-link"></span></a>Arrays</h3>
+
+<p>Arrays are also available in Verilog and are used as follows:</p>
+
+<pre><code>integer int_array[0:7]; // Array of 8 integer values.
+reg reg_array[0:15];    // Array of 16 register values.
+</code></pre>
+
+<h3>
+<a id="memories" class="anchor" href="#memories" aria-hidden="true"><span class="octicon octicon-link"></span></a>Memories</h3>
+
+<p>The way to define a memory range in Verilog seems to be using an array of registers of a given size.</p>
+
+<pre><code>reg [7:0]  byte_aligned_memory[0:1023];  // BYTE addressable memory of 1 kilo byte.
+reg [31:0] dword_aligned_memory[0:1023]; // DWORD addressable memory of 4 kilo byte.
+</code></pre>
+
+<h3>
+<a id="parameters" class="anchor" href="#parameters" aria-hidden="true"><span class="octicon octicon-link"></span></a>Parameters</h3>
+
+<p>Parameters are like <code>#define</code> statements in C/C++. They can be used as constants inside your designs.</p>
+
+<pre><code>parameter MEM_SIZE 1024;
+reg [7:0] byte_mem[0:MEM_SIZE-1];
+</code></pre>
+        </section>
+
+        <footer>
+          Verilogin&#39; is maintained by <a href="https://github.com/agustingianni">agustingianni</a><br>
+          This page was generated by <a href="https://pages.github.com">GitHub Pages</a>. Tactile theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.
+        </footer>
+
+        
+      </div>
+    </div>
+  </body>
+</html>
