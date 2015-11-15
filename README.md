@@ -1,2 +1,2 @@
 # verilog
-Various verilog tests.
+Various verilog tests and examples I've developed/reproduced while learning verilog.
