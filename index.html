@@ -174,6 +174,114 @@ reg [7:0] byte_mem[0:MEM_SIZE-1];
 <pre><code>`include design_b.v
 </code></pre>
 
+<h2>
+<a id="modules" class="anchor" href="#modules" aria-hidden="true"><span class="octicon octicon-link"></span></a>Modules</h2>
+
+<h3>
+<a id="purpose" class="anchor" href="#purpose" aria-hidden="true"><span class="octicon octicon-link"></span></a>Purpose</h3>
+
+<p>A module is a container of a functional piece of your design. Modules can be reuses and are akin to procedures in regular programming languages. They have input and output variables named ports. Ports are the elements that allow the caller to interact with the module.</p>
+
+<p>The declaration is very similar to old style C code.</p>
+
+<pre><code>module module_name(arg1, arg2, ..., argn);
+
+// Set the direction of the ports.
+input arg1;
+output arg2;
+...
+inout argn;
+
+// Set the 'type' of the ports.
+reg arg1;
+wire arg2;
+...
+reg argn;
+
+// List of statements that work with the ports.
+statement_1;
+statement_2;
+...
+statement_n;
+
+endmodule // End of module 'module_name'.
+</code></pre>
+
+<h2>
+<a id="dataflow-modeling" class="anchor" href="#dataflow-modeling" aria-hidden="true"><span class="octicon octicon-link"></span></a>Dataflow modeling</h2>
+
+<h3>
+<a id="continuous-assignment" class="anchor" href="#continuous-assignment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Continuous assignment</h3>
+
+<p>Continuous assignments are always active, that means that whenever there is a change in one of the elements on the right-hand-side of the assignment expression, the assignment will be performed again.</p>
+
+<p>There are two ways to do a continuous assignment operation, the explicit way (using <code>assign</code>) and the implicit way.</p>
+
+<pre><code>assign out = in1 &amp; in2;  // Explicit continuous assignment.
+wire out = in1 &amp; in2;    // Implicit continuous assignment.
+</code></pre>
+
+<p>It appears that the most important thing about this topic is the fact that the variable assigned gets 'updated' whenever there is a change in the right-hand-side of the assignment operation.</p>
+
+<p>Another interesting characteristic of assignments is that they can delay the assign operation a certain amount of time.</p>
+
+<pre><code>assign #5 out = in1 &amp; in2;
+wire #5 out = in1 &amp; in2;
+</code></pre>
+
+<p>The previous two line codes are equivalent and they postpone the assignment of variable <code>out</code> five time units after any change is detected in either <code>in1</code> or <code>in2</code>.</p>
+
+<h3>
+<a id="weird-operators" class="anchor" href="#weird-operators" aria-hidden="true"><span class="octicon octicon-link"></span></a>Weird operators</h3>
+
+<p>Verilog has all the usual operators that you would find in C/C++ but the it adds some more that are relevant to hardware design.</p>
+
+<ul>
+<li>Case equality (<code>===</code>) is used when the compared bits can include <code>x</code> and <code>z</code> bits.</li>
+<li>Case inequality (<code>!==</code>) is used in the same cases as case equality.</li>
+<li>Bitwise nxor (<code>~^</code>).</li>
+<li>Concatenation (<code>{}</code>) is used to concatenate bits for instance: <code>{2'b11, 2'b00} === 4'b1100</code>.</li>
+<li>Replication (<code>{{}}</code>) is used to replicate an expression for instance: <code>{ 4{1'b1 } } === 4'b1111</code>.</li>
+</ul>
+
+<h2>
+<a id="behavioral-modeling" class="anchor" href="#behavioral-modeling" aria-hidden="true"><span class="octicon octicon-link"></span></a> Behavioral modeling</h2>
+
+<p>The behavioral modeling is the modeling of digital designs that is closer to a regular programming language. All the behavioral modeling is done inside <code>always</code> or <code>initial</code> blocks.</p>
+
+<h3>
+<a id="initial-blocks" class="anchor" href="#initial-blocks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Initial blocks</h3>
+
+<p>These kinds of blocks execute at time 0 only one time during a simulation. Usually are used to initialize all the elements of your design. If there are multiple <code>initial</code> blocks, they will be executed in parallel at the same time.</p>
+
+<pre><code>initial
+begin
+some_reg = 1'b0;
+clk = 1'b0;
+$finish; // halt the simulation.
+end
+</code></pre>
+
+<p>As evidenced in the previous example, at least one of the <code>initial</code> blocks needs to finish with a <code>$finish</code> or <code>$stop</code> statement in order to avoid running forever.</p>
+
+<h3>
+<a id="always-blocks" class="anchor" href="#always-blocks" aria-hidden="true"><span class="octicon octicon-link"></span></a>Always blocks</h3>
+
+<p>Always blocks are similar to initial blocks but they keep executing forever.</p>
+
+<h3>
+<a id="procedural-assignment" class="anchor" href="#procedural-assignment" aria-hidden="true"><span class="octicon octicon-link"></span></a>Procedural assignment</h3>
+
+<p>Used to update the value of a <code>reg</code>, <code>integer</code>, <code>real</code> or <code>time</code> variable. The main difference with the continuous assignment counterpart is that the value of the assigned value will not change unless there is another procedural assignment on the same variable.</p>
+
+<p>There are two kinds of procedural assignments, blocking and non blocking. The main difference is, as the name explains, the blocking nature. Blocking assignments 'execute' in the order they are made inside the sequential block.</p>
+
+<pre><code>variable_1 = 0;  // blocking assignment.
+variable_2 &lt;= 0; // non blocking assignment.
+</code></pre>
+
+<p>The main idea behind non blocking assignments is to avoid race conditions between concurrent data transfers. I have yet to understand how this works though.</p>
+
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/agustingianni/verilog">Verilogin&#39;</a> is maintained by <a href="https://github.com/agustingianni">agustingianni</a>.</span>
 
