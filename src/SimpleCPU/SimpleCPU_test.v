@@ -2,13 +2,13 @@
 // iverilog -o SimpleCPU SimpleCPU.v SimpleCPU_test.v
 // 
 module SimpleCPU_test ();
-	reg clk, rst;
-	reg [31:0] cur_ins;
-	
-	// Instanciate our CPU and connect the input ports.
-	SimpleCPU cpu(clk, rst, cur_ins);
-	
-	// Setup the simulation environment.
+    reg clk, rst;
+    reg [31:0] cur_ins;
+    
+    // Instanciate our CPU and connect the input ports.
+    SimpleCPU cpu(clk, rst, cur_ins);
+    
+    // Setup the simulation environment.
     initial
     begin
         clk = 0;    // Set the clock to low.
@@ -28,5 +28,5 @@ module SimpleCPU_test ();
     begin 
         #5 clk = ~clk;
     end
-	
+    
 endmodule
